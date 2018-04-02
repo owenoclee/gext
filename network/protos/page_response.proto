@@ -1,0 +1,9 @@
+syntax = "proto3";
+package gext.network;
+option go_package = "network";
+
+import "thread_response.proto";
+
+message PageResponse {
+    repeated gext.network.ThreadResponse threads = 1;
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package gext.network;
+option go_package = "network";
+
+message PostResponse {
+    uint32 id = 1;
+    uint32 reply_to = 2;    // id of thread or 0 if this post is a thread
+    string board = 3;
+    string subject = 4;
+    string body = 5;
+    fixed32 created_at = 6; // unix
+}

@@ -1,0 +1,10 @@
+syntax = "proto3";
+package gext.network;
+option go_package = "network";
+
+message PostRequest {
+    uint32 reply_to = 1;    // replies only: required, id of thread to reply to
+    string board = 2;       // threads only: required
+    string subject = 3;     // threads only: optional, but required if body is omitted
+    string body = 4;        // threads and replies: required for replies, optional for threads
+}
