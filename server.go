@@ -7,6 +7,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+type serverConfig struct {
+	Address string
+}
+
 func serveHTTP(router *httprouter.Router) {
-	log.Fatal(http.ListenAndServe(":8080", router))
+	var config serverConfig
+	loadConfig(&config, "cfg/server.json")
+	log.Fatal(http.ListenAndServe(config.Address, router))
 }
