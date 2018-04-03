@@ -44,11 +44,11 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) 
 		body,
 	)
 	if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 
 	return responses.Created(fmt.Sprintf("/%v/thread/%v", board, id))
@@ -70,7 +70,7 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 	if err == sql.ErrNoRows {
 		return responses.Status(404)
 	} else if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 	defer posts.Close()
 
@@ -86,7 +86,7 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 			createdAt time.Time
 		)
 		if err := posts.Scan(&pID, &replyTo, &board, &subject, &body, &createdAt); err != nil {
-			return responses.Status(500)
+			return responses.LogError(err)
 		}
 		post := network.PostResponse{
 			Id:        uint32(pID),

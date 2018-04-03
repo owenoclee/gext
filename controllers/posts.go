@@ -33,7 +33,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 	if err := thread.Scan(&board); err == sql.ErrNoRows {
 		return responses.Status(422)
 	} else if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 
 	// Store the post
@@ -43,11 +43,11 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 		body,
 	)
 	if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 
 	return responses.Created(fmt.Sprintf("/%v/thread/%v#%v", board.String, replyTo, id))

@@ -40,7 +40,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 	if err == sql.ErrNoRows {
 		return responses.Status(404)
 	} else if err != nil {
-		return responses.Status(500)
+		return responses.LogError(err)
 	}
 	defer posts.Close()
 
@@ -57,7 +57,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 			createdAt time.Time
 		)
 		if err := posts.Scan(&pID, &replyTo, &board, &subject, &body, &createdAt); err != nil {
-			return responses.Status(500)
+			return responses.LogError(err)
 		}
 		postResponse := network.PostResponse{
 			Id:        uint32(pID),
