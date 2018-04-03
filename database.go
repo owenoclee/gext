@@ -1,6 +1,9 @@
 package main
 
-import "database/sql"
+import (
+	"database/sql"
+	"log"
+)
 
 type dbConfig struct {
 	DataSourceName string
@@ -17,10 +20,11 @@ func initDB() *sql.DB {
 func openDB(config dbConfig) *sql.DB {
 	db, err := sql.Open("mysql", config.DataSourceName+"?parseTime=true")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	if err := db.Ping(); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	return db
@@ -40,8 +44,9 @@ func createSchema(db *sql.DB) {
 		)`,
 	)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
 	_, err = db.Exec(
 		`CREATE OR REPLACE VIEW latest_threads AS
 		SELECT threads.id AS thread_id, COALESCE(MAX(replies.created_at), MAX(threads.created_at)) AS bumped_at, threads.board FROM posts AS threads
@@ -50,6 +55,6 @@ func createSchema(db *sql.DB) {
 		GROUP BY thread_id`,
 	)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

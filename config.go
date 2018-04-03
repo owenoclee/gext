@@ -2,19 +2,20 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 )
 
 func loadConfig(config interface{}, filePath string) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer file.Close()
 
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(config)
-	if err != nil {
-		panic(err)
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(config); err != nil {
+		log.Fatal(err)
 	}
 }
