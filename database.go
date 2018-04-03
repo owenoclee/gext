@@ -1,17 +1,14 @@
 package main
 
-import (
-	"database/sql"
-	"encoding/json"
-	"os"
-)
+import "database/sql"
 
 type dbConfig struct {
 	DataSourceName string
 }
 
 func initDB() *sql.DB {
-	config := loadConfig()
+	var config dbConfig
+	loadConfig(&config, "cfg/database.json")
 	db := openDB(config)
 	createSchema(db)
 	return db
@@ -27,23 +24,6 @@ func openDB(config dbConfig) *sql.DB {
 	}
 
 	return db
-}
-
-func loadConfig() dbConfig {
-	file, err := os.Open("cfg/database.json")
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	decoder := json.NewDecoder(file)
-	var config dbConfig
-	err = decoder.Decode(&config)
-	if err != nil {
-		panic(err)
-	}
-
-	return config
 }
 
 func createSchema(db *sql.DB) {
