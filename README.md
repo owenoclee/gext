@@ -15,7 +15,17 @@ database. Please see the
 more information on DSN.
 
 ## Build & run
+Compile the protobuf files to Go source:
+```
+npm run protos
+```
+
+Build the server:
 ```
 go build
+```
+
+Run the server:
+```
 ./gext-server
 ```
