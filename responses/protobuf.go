@@ -17,6 +17,7 @@ func (p protobuf) Write(w http.ResponseWriter) {
 		w.WriteHeader(500)
 		return
 	}
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	w.Header().Set("Content-Type", "application/vnd.google.protobuf")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(p.code)
