@@ -6,9 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/owenoclee/gext-server/network"
-
 	"github.com/julienschmidt/httprouter"
+	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
 
@@ -45,8 +44,8 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 	defer posts.Close()
 
 	// Decode database response into a thread (collection of posts)
-	pageResponse := network.PageResponse{}
-	curThread := &network.ThreadResponse{}
+	pageResponse := models.Page{}
+	curThread := &models.Thread{}
 	for posts.Next() {
 		var (
 			pID       int64
@@ -59,7 +58,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 		if err := posts.Scan(&pID, &replyTo, &board, &subject, &body, &createdAt); err != nil {
 			return responses.LogError(err)
 		}
-		postResponse := network.PostResponse{
+		postResponse := models.Post{
 			Id:        uint32(pID),
 			ReplyTo:   uint32(replyTo.Int64),
 			Board:     board.String,
@@ -73,7 +72,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 			if len(curThread.Posts) > 0 {
 				pageResponse.Threads = append(pageResponse.Threads, curThread)
 			}
-			curThread = &network.ThreadResponse{}
+			curThread = &models.Thread{}
 		}
 		curThread.Posts = append(curThread.Posts, &postResponse)
 	}

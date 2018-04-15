@@ -12,7 +12,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/network"
+	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
 
@@ -21,7 +21,7 @@ var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) responses.Response {
 	// Read the request
 	postBinary, err := ioutil.ReadAll(r.Body)
-	post := &network.PostRequest{}
+	post := &models.Post{}
 	if err2 := proto.Unmarshal(postBinary, post); err != nil || err2 != nil {
 		return responses.Status(400)
 	}
@@ -75,7 +75,7 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 	defer posts.Close()
 
 	// Decode database response into a thread (collection of posts)
-	thread := &network.ThreadResponse{}
+	thread := &models.Thread{}
 	for posts.Next() {
 		var (
 			pID       int64
@@ -88,7 +88,7 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 		if err := posts.Scan(&pID, &replyTo, &board, &subject, &body, &createdAt); err != nil {
 			return responses.LogError(err)
 		}
-		post := network.PostResponse{
+		post := models.Post{
 			Id:        uint32(pID),
 			ReplyTo:   uint32(replyTo.Int64),
 			Board:     board.String,

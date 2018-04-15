@@ -1,8 +1,8 @@
 syntax = "proto3";
-package gext.network;
-option go_package = "network";
+package gext.models;
+option go_package = "models";
 
-message PostResponse {
+message Post {
     uint32 id = 1;
     uint32 reply_to = 2;    // id of thread or 0 if this post is a thread
     string board = 3;

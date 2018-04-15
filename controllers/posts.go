@@ -9,14 +9,14 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/network"
+	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
 
 var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) responses.Response {
 	// Read the request
 	postBinary, err := ioutil.ReadAll(r.Body)
-	post := &network.PostRequest{}
+	post := &models.Post{}
 	if err2 := proto.Unmarshal(postBinary, post); err != nil || err2 != nil {
 		return responses.Status(400)
 	}

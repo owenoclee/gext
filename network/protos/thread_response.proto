@@ -1,9 +1,0 @@
-syntax = "proto3";
-package gext.network;
-option go_package = "network";
-
-import "post_response.proto";
-
-message ThreadResponse {
-    repeated gext.network.PostResponse posts = 1;
-}
