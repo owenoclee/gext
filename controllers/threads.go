@@ -8,10 +8,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
+	"github.com/owenoclee/gext-server/drivers"
 	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
@@ -27,31 +27,21 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) 
 	}
 
 	// Validate the request
-	board := strings.ToLower(strings.TrimSpace(post.GetBoard()))
-	if !boardRegex.MatchString(board) {
+	post.Board = strings.ToLower(strings.TrimSpace(post.GetBoard()))
+	if !boardRegex.MatchString(post.Board) {
 		return responses.Status(422)
 	}
-	subject, body := strings.TrimSpace(post.GetSubject()), strings.TrimSpace(post.GetBody())
-	if (subject == "" && body == "") || len([]rune(subject)) > 32 || len([]rune(body)) > 4000 {
+	post.Subject = strings.TrimSpace(post.GetSubject())
+	post.Body = strings.TrimSpace(post.GetBody())
+	if (post.Subject == "" && post.Body == "") || len([]rune(post.Subject)) > 32 || len([]rune(post.Body)) > 4000 {
 		return responses.Status(422)
 	}
 
-	// Store the post
-	result, err := db.Exec(
-		"INSERT INTO posts (board, subject, body) VALUES (?, ?, ?)",
-		board,
-		subject,
-		body,
-	)
+	id, err := drivers.StoreThread(post)
 	if err != nil {
 		return responses.LogError(err)
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return responses.LogError(err)
-	}
-
-	return responses.Created(fmt.Sprintf("/%v/thread/%v", board, id))
+	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
 }
 
 var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) responses.Response {
@@ -61,43 +51,11 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 		return responses.Status(422)
 	}
 
-	// Fetch all posts in thread, incl the thread itself
-	posts, err := db.Query(
-		"SELECT id, reply_to, board, subject, body, created_at FROM posts WHERE id = ? OR reply_to = ?",
-		id,
-		id,
-	)
-	if err == sql.ErrNoRows {
-		return responses.Status(404)
-	} else if err != nil {
+	thread, err := drivers.GetThread(id)
+	if err != nil {
 		return responses.LogError(err)
+	} else if thread.GetPosts() == nil {
+		return responses.Status(404)
 	}
-	defer posts.Close()
-
-	// Decode database response into a thread (collection of posts)
-	thread := &models.Thread{}
-	for posts.Next() {
-		var (
-			pID       int64
-			replyTo   sql.NullInt64
-			board     sql.NullString
-			subject   sql.NullString
-			body      sql.NullString
-			createdAt time.Time
-		)
-		if err := posts.Scan(&pID, &replyTo, &board, &subject, &body, &createdAt); err != nil {
-			return responses.LogError(err)
-		}
-		post := models.Post{
-			Id:        uint32(pID),
-			ReplyTo:   uint32(replyTo.Int64),
-			Board:     board.String,
-			Subject:   subject.String,
-			Body:      body.String,
-			CreatedAt: uint32(createdAt.Unix()),
-		}
-		thread.Posts = append(thread.Posts, &post)
-	}
-
-	return responses.Protobuf(thread, 200)
+	return responses.Protobuf(&thread, 200)
 }
