@@ -15,6 +15,7 @@ func (e serverError) Write(w http.ResponseWriter) {
 	if e.log {
 		log.Print(e.message)
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(500)
 }
 
