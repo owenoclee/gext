@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/drivers"
+	"github.com/owenoclee/gext-server/datastore"
 	"github.com/owenoclee/gext-server/responses"
 )
 
@@ -20,7 +20,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 		pageNum = 1
 	}
 
-	page, err := drivers.GetPage(p.ByName("board"), pageNum)
+	page, err := datastore.GetPage(p.ByName("board"), pageNum)
 	if err != nil {
 		return responses.LogError(err)
 	} else if page.GetThreads() == nil {

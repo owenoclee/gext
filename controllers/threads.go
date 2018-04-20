@@ -11,7 +11,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/drivers"
+	"github.com/owenoclee/gext-server/datastore"
 	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
@@ -37,7 +37,7 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) 
 		return responses.Status(422)
 	}
 
-	id, err := drivers.StoreThread(post)
+	id, err := datastore.StoreThread(post)
 	if err != nil {
 		return responses.LogError(err)
 	}
@@ -51,7 +51,7 @@ var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) r
 		return responses.Status(422)
 	}
 
-	thread, err := drivers.GetThread(id)
+	thread, err := datastore.GetThread(id)
 	if err != nil {
 		return responses.LogError(err)
 	} else if thread.GetPosts() == nil {

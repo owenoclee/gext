@@ -1,4 +1,4 @@
-package drivers
+package datastore
 
 import (
 	"database/sql"

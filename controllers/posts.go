@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/owenoclee/gext-server/drivers"
-
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
+	"github.com/owenoclee/gext-server/datastore"
 	"github.com/owenoclee/gext-server/models"
 	"github.com/owenoclee/gext-server/responses"
 )
@@ -29,7 +28,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 		return responses.Status(422)
 	}
 	// Check the thread exists
-	board, err := drivers.GetThreadBoard(post.GetReplyTo())
+	board, err := datastore.GetThreadBoard(post.GetReplyTo())
 	if board == "" {
 		if err != nil {
 			return responses.LogError(err)
@@ -37,7 +36,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 		return responses.Status(422)
 	}
 
-	id, err := drivers.StorePost(post)
+	id, err := datastore.StorePost(post)
 	if err != nil {
 		return responses.LogError(err)
 	}
