@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -14,7 +13,7 @@ import (
 	"github.com/owenoclee/gext-server/responses"
 )
 
-var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) responses.Response {
+var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Read the request
 	postBinary, err := ioutil.ReadAll(r.Body)
 	post := &models.Post{}
@@ -28,7 +27,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 		return responses.Status(422)
 	}
 	// Check the thread exists
-	board, err := datastore.GetThreadBoard(post.GetReplyTo())
+	board, err := ds.GetThreadBoard(post.GetReplyTo())
 	if board == "" {
 		if err != nil {
 			return responses.LogError(err)
@@ -36,7 +35,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) re
 		return responses.Status(422)
 	}
 
-	id, err := datastore.StorePost(post)
+	id, err := ds.StorePost(post)
 	if err != nil {
 		return responses.LogError(err)
 	}

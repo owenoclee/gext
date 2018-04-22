@@ -1,18 +1,18 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/owenoclee/gext-server/datastore"
 	"github.com/owenoclee/gext-server/responses"
 )
 
-type Action func(*http.Request, httprouter.Params, *sql.DB) responses.Response
+type Action func(*http.Request, httprouter.Params, datastore.Datastore) responses.Response
 
-func (a Action) Handler(db *sql.DB) httprouter.Handle {
+func (a Action) Handler(ds datastore.Datastore) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		response := a(r, p, db)
+		response := a(r, p, ds)
 		response.Write(w)
 	}
 }

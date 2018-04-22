@@ -1,14 +1,26 @@
 package main
 
 import (
-	_ "github.com/go-sql-driver/mysql"
+	"log"
+	"net/http"
+
 	"github.com/owenoclee/gext-server/datastore"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	db := initDB()
-	defer db.Close()
-	datastore.Initialize(db)
-	router := initRouter(db)
-	serveHTTP(router)
+	config := map[string]string{
+		"DATASTORE":           "mysql",
+		"DATASTORE_MYSQL_DSN": "root@/gext",
+		"ADDRESS":             ":8080",
+	}
+
+	ds, err := datastore.NewDatastore(config)
+	defer ds.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	router := initRouter(ds)
+	log.Fatal(http.ListenAndServe(config["ADDRESS"], router))
 }

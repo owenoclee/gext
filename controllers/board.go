@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/owenoclee/gext-server/responses"
 )
 
-var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) responses.Response {
+var ShowBoard Action = func(r *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Validate parameters
 	pageNum, err := strconv.ParseInt(p.ByName("page"), 10, 64)
 	if err != nil {
@@ -20,7 +19,7 @@ var ShowBoard Action = func(r *http.Request, p httprouter.Params, db *sql.DB) re
 		pageNum = 1
 	}
 
-	page, err := datastore.GetPage(p.ByName("board"), pageNum)
+	page, err := ds.GetPage(p.ByName("board"), pageNum)
 	if err != nil {
 		return responses.LogError(err)
 	} else if page.GetThreads() == nil {

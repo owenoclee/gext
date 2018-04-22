@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -18,7 +17,7 @@ import (
 
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
-var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) responses.Response {
+var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Read the request
 	postBinary, err := ioutil.ReadAll(r.Body)
 	post := &models.Post{}
@@ -37,21 +36,21 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, db *sql.DB) 
 		return responses.Status(422)
 	}
 
-	id, err := datastore.StoreThread(post)
+	id, err := ds.StoreThread(post)
 	if err != nil {
 		return responses.LogError(err)
 	}
 	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
 }
 
-var ShowThread Action = func(r *http.Request, p httprouter.Params, db *sql.DB) responses.Response {
+var ShowThread Action = func(r *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Validate parameters
 	id, err := strconv.ParseInt(p.ByName("id"), 10, 64)
 	if err != nil {
 		return responses.Status(422)
 	}
 
-	thread, err := datastore.GetThread(id)
+	thread, err := ds.GetThread(id)
 	if err != nil {
 		return responses.LogError(err)
 	} else if thread.GetPosts() == nil {

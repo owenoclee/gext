@@ -1,23 +1,23 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext-server/controllers"
+	"github.com/owenoclee/gext-server/datastore"
 )
 
-func initRouter(db *sql.DB) *httprouter.Router {
+func initRouter(ds datastore.Datastore) *httprouter.Router {
 	router := httprouter.New()
 	router.PanicHandler = panicHandler
 
-	router.POST("/posts", controllers.StorePost.Handler(db))
+	router.POST("/posts", controllers.StorePost.Handler(ds))
 	router.OPTIONS("/posts", corsHandler)
-	router.GET("/threads/:id", controllers.ShowThread.Handler(db))
-	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(db))
-	router.POST("/threads", controllers.StoreThread.Handler(db))
+	router.GET("/threads/:id", controllers.ShowThread.Handler(ds))
+	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds))
+	router.POST("/threads", controllers.StoreThread.Handler(ds))
 	router.OPTIONS("/threads", corsHandler)
 
 	return router
