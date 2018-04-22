@@ -50,7 +50,6 @@ func newMySQLDatastoreFactory(env map[string]string) (Datastore, error) {
 }
 
 func (db mySQLDatastore) StoreThread(thread *models.Post) (uint32, error) {
-	// Store the post
 	result, err := db.Exec(
 		"INSERT INTO posts (board, subject, body) VALUES (?, ?, ?)",
 		thread.GetBoard(),
@@ -109,16 +108,14 @@ func (db mySQLDatastore) GetThread(id int64) (models.Thread, error) {
 func (db mySQLDatastore) GetThreadBoard(id uint32) (string, error) {
 	thread := db.QueryRow("SELECT board FROM posts WHERE id = ? AND reply_to IS NULL", id)
 	var board sql.NullString
-	if err := thread.Scan(&board); err == sql.ErrNoRows {
+	err := thread.Scan(&board)
+	if err == sql.ErrNoRows {
 		return "", nil
-	} else if err != nil {
-		return "", err
 	}
-	return board.String, nil
+	return board.String, err
 }
 
 func (db mySQLDatastore) StorePost(post *models.Post) (uint32, error) {
-	// Store the post
 	result, err := db.Exec(
 		"INSERT INTO posts (reply_to, body) VALUES (?, ?)",
 		post.GetReplyTo(),
