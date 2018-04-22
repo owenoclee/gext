@@ -18,7 +18,7 @@ type Datastore interface {
 type datastoreFactory func(map[string]string) (Datastore, error)
 
 var registeredFactories map[string]datastoreFactory = map[string]datastoreFactory{
-	"mysql": newMySQLDatastoreFactory,
+	"mysql": newMySQLDatastore,
 }
 
 func NewDatastore(env map[string]string) (Datastore, error) {
