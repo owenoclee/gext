@@ -15,16 +15,16 @@ type Datastore interface {
 	Close() error
 }
 
-type datastoreFactory func(conf map[string]string) (Datastore, error)
+type datastoreFactory func(map[string]string) (Datastore, error)
 
 var registeredFactories map[string]datastoreFactory = map[string]datastoreFactory{
 	"mysql": newMySQLDatastoreFactory,
 }
 
-func NewDatastore(config map[string]string) (Datastore, error) {
-	factory := registeredFactories[config["DATASTORE"]]
+func NewDatastore(env map[string]string) (Datastore, error) {
+	factory := registeredFactories[env["DATASTORE"]]
 	if factory == nil {
-		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", config["DATASTORE"])
+		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", env["DATASTORE"])
 	}
-	return factory(config)
+	return factory(env)
 }

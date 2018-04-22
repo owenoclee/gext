@@ -9,8 +9,8 @@ import (
 
 type mySQLDatastore struct{ *sql.DB }
 
-func newMySQLDatastoreFactory(config map[string]string) (Datastore, error) {
-	db, err := sql.Open("mysql", config["DATASTORE_MYSQL_DSN"]+"?parseTime=true")
+func newMySQLDatastoreFactory(env map[string]string) (Datastore, error) {
+	db, err := sql.Open("mysql", env["DATASTORE_MYSQL_DSN"]+"?parseTime=true")
 	if err != nil {
 		return nil, err
 	}

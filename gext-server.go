@@ -1,26 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
 	"github.com/owenoclee/gext-server/datastore"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	config := map[string]string{
-		"DATASTORE":           "mysql",
-		"DATASTORE_MYSQL_DSN": "root@/gext",
-		"ADDRESS":             ":8080",
+	env, err := godotenv.Read()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	ds, err := datastore.NewDatastore(config)
+	ds, err := datastore.NewDatastore(env)
 	defer ds.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 	router := initRouter(ds)
-	log.Fatal(http.ListenAndServe(config["ADDRESS"], router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env["ADDRESS"], env["PORT"]), router))
 }
