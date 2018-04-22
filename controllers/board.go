@@ -11,12 +11,13 @@ import (
 
 var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Read
-	pageNum, err := strconv.ParseInt(p.ByName("page"), 10, 64)
+	pageNum64, err := strconv.ParseInt(p.ByName("page"), 10, 64)
 
 	// Validate
 	if err != nil {
 		return responses.Status(422)
 	}
+	pageNum := uint32(pageNum64)
 	if pageNum < 1 {
 		pageNum = 1
 	}

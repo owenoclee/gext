@@ -8,10 +8,10 @@ import (
 
 type Datastore interface {
 	StoreThread(thread *models.Post) (uint32, error)
-	GetThread(id int64) (models.Thread, error)
+	GetThread(id uint32) (models.Thread, error)
 	GetThreadBoard(id uint32) (string, error)
 	StorePost(post *models.Post) (uint32, error)
-	GetPage(board string, pageNum int64) (models.Page, error)
+	GetPage(board string, pageNum uint32) (models.Page, error)
 	Close() error
 }
 

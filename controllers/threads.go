@@ -46,12 +46,13 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore
 
 var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Read
-	id, err := strconv.ParseInt(p.ByName("id"), 10, 64)
+	id64, err := strconv.ParseInt(p.ByName("id"), 10, 64)
 
 	// Validate
 	if err != nil {
 		return responses.Status(422)
 	}
+	id := uint32(id64)
 
 	// Show
 	thread, err := ds.GetThread(id)

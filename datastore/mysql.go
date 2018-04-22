@@ -63,7 +63,7 @@ func (db mySQLDatastore) StoreThread(thread *models.Post) (uint32, error) {
 	return uint32(id), err
 }
 
-func (db mySQLDatastore) GetThread(id int64) (models.Thread, error) {
+func (db mySQLDatastore) GetThread(id uint32) (models.Thread, error) {
 	// Fetch all posts in thread, incl the thread itself
 	posts, err := db.Query(
 		"SELECT id, reply_to, board, subject, body, created_at FROM posts WHERE id = ? OR reply_to = ?",
@@ -128,7 +128,7 @@ func (db mySQLDatastore) StorePost(post *models.Post) (uint32, error) {
 	return uint32(id), err
 }
 
-func (db mySQLDatastore) GetPage(board string, pageNum int64) (models.Page, error) {
+func (db mySQLDatastore) GetPage(board string, pageNum uint32) (models.Page, error) {
 	// Fetch latest threads + posts
 	posts, err := db.Query(
 		`SELECT posts.* FROM posts
