@@ -1,10 +1,27 @@
 package main
 
-import _ "github.com/go-sql-driver/mysql"
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/joho/godotenv"
+	"github.com/owenoclee/gext-server/datastore"
+
+	_ "github.com/go-sql-driver/mysql"
+)
 
 func main() {
-	db := initDB()
-	defer db.Close()
-	router := initRouter(db)
-	serveHTTP(router)
+	env, err := godotenv.Read()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	ds, err := datastore.NewDatastore(env)
+	defer ds.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	router := initRouter(ds)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env["ADDRESS"], env["PORT"]), router))
 }
