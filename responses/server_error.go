@@ -19,10 +19,6 @@ func (e serverError) Write(w http.ResponseWriter) {
 	w.WriteHeader(500)
 }
 
-func Error() Response {
-	return serverError{}
-}
-
 func LogError(err interface{}) Response {
 	return serverError{log: true, message: fmt.Sprint(err)}
 }
