@@ -2,21 +2,34 @@ package datastore
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
+	"github.com/owenoclee/gext-server/config"
 	"github.com/owenoclee/gext-server/models"
 )
 
 type mySQLDatastore struct{ *sql.DB }
 
-func newMySQLDatastore(env map[string]string) (Datastore, error) {
-	db, err := sql.Open("mysql", env["DATASTORE_MYSQL_DSN"]+"?parseTime=true")
+var retries = 5
+
+func newMySQLDatastore(env config.Env) (Datastore, error) {
+	db, err := sql.Open("mysql", env.Read("DATASTORE_MYSQL_DSN")+"?parseTime=true")
 	if err != nil {
 		return nil, err
 	}
 
-	if err := db.Ping(); err != nil {
-		return nil, err
+	for i := 1; i <= retries+1; i++ {
+		err := db.Ping()
+		if err == nil {
+			break
+		} else {
+			if i == retries+1 {
+				return nil, err
+			}
+			log.Printf("failed to connect to db, retrying (%v/%v)...", i, retries)
+			time.Sleep(6 * time.Second)
+		}
 	}
 
 	_, err = db.Exec(
