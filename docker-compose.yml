@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  gext-server:
+    build: ./
+    environment:
+      DATASTORE_MYSQL_DSN: "root:password1@/gext"
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  db:
+    image: mysql:8.0.11
+    environment:
+      MYSQL_ROOT_PASSWORD: password1
+      MYSQL_DATABASE: gext
+    volumes:
+      - "db-data:/var/lib/mysql"
+    networks:
+      - backend
+    expose:
+      - "3306"
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+
+volumes:
+  db-data:
+
+networks:
+  backend:
