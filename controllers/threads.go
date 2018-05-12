@@ -10,9 +10,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/datastore"
-	"github.com/owenoclee/gext-server/models"
-	"github.com/owenoclee/gext-server/responses"
+	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/models"
+	"github.com/owenoclee/gext/responses"
 )
 
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")

@@ -8,9 +8,9 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/datastore"
-	"github.com/owenoclee/gext-server/models"
-	"github.com/owenoclee/gext-server/responses"
+	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/models"
+	"github.com/owenoclee/gext/responses"
 )
 
 var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {

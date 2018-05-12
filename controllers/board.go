@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/datastore"
-	"github.com/owenoclee/gext-server/responses"
+	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/responses"
 )
 
 var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {

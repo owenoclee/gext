@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/owenoclee/gext-server/models"
+	"github.com/owenoclee/gext/models"
 )
 
 type mySQLDatastore struct{ *sql.DB }

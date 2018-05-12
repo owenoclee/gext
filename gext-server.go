@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
-	"github.com/owenoclee/gext-server/datastore"
+	"github.com/owenoclee/gext/datastore"
 
 	_ "github.com/go-sql-driver/mysql"
 )
