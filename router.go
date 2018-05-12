@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/controllers"
-	"github.com/owenoclee/gext-server/datastore"
+	"github.com/owenoclee/gext/controllers"
+	"github.com/owenoclee/gext/datastore"
 )
 
 func initRouter(ds datastore.Datastore) *httprouter.Router {

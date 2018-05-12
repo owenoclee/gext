@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/owenoclee/gext-server/datastore"
-	"github.com/owenoclee/gext-server/responses"
+	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/responses"
 )
 
 type Action func(*http.Request, httprouter.Params, datastore.Datastore) responses.Response

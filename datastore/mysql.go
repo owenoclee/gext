@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/owenoclee/gext-server/config"
-	"github.com/owenoclee/gext-server/models"
+	"github.com/owenoclee/gext/config"
+	"github.com/owenoclee/gext/models"
 )
 
 type mySQLDatastore struct{ *sql.DB }

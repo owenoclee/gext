@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/owenoclee/gext-server/config"
-	"github.com/owenoclee/gext-server/datastore"
+	"github.com/owenoclee/gext/config"
+	"github.com/owenoclee/gext/datastore"
 
 	_ "github.com/go-sql-driver/mysql"
 )
