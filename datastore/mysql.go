@@ -11,7 +11,10 @@ import (
 
 type mySQLDatastore struct{ *sql.DB }
 
-var retries = 5
+const (
+	maxAttempts = 5
+	retryDelay  = 3 * time.Second
+)
 
 func newMySQLDatastore(env config.Env) (Datastore, error) {
 	db, err := sql.Open("mysql", env.Read("DATASTORE_MYSQL_DSN")+"?parseTime=true")
@@ -19,16 +22,18 @@ func newMySQLDatastore(env config.Env) (Datastore, error) {
 		return nil, err
 	}
 
-	for i := 1; i <= retries+1; i++ {
+	for i := 1; i <= maxAttempts; i++ {
+		log.Printf("attempting to connect to db (%v/%v)...\n", i, maxAttempts)
 		err := db.Ping()
 		if err == nil {
+			log.Print("successfully connected to db")
 			break
 		} else {
-			if i == retries+1 {
+			log.Print("failed to connect to db")
+			if i == maxAttempts {
 				return nil, err
 			}
-			log.Printf("failed to connect to db, retrying (%v/%v)...", i, retries)
-			time.Sleep(6 * time.Second)
+			time.Sleep(retryDelay)
 		}
 	}
 
