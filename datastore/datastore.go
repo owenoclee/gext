@@ -3,6 +3,7 @@ package datastore
 import (
 	"fmt"
 
+	"github.com/owenoclee/gext/config"
 	"github.com/owenoclee/gext/models"
 )
 
@@ -15,16 +16,16 @@ type Datastore interface {
 	Close() error
 }
 
-type datastoreFactory func(map[string]string) (Datastore, error)
+type datastoreFactory func(config.Env) (Datastore, error)
 
 var registeredFactories map[string]datastoreFactory = map[string]datastoreFactory{
 	"mysql": newMySQLDatastore,
 }
 
-func NewDatastore(env map[string]string) (Datastore, error) {
-	factory := registeredFactories[env["DATASTORE"]]
+func NewDatastore(env config.Env) (Datastore, error) {
+	factory := registeredFactories[env.Read("GEXT_DATASTORE")]
 	if factory == nil {
-		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", env["DATASTORE"])
+		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", env.Read("GEXT_DATASTORE"))
 	}
 	return factory(env)
 }

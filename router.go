@@ -6,11 +6,12 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/owenoclee/gext/config"
 	"github.com/owenoclee/gext/controllers"
 	"github.com/owenoclee/gext/datastore"
 )
 
-func initRouter(ds datastore.Datastore, t *template.Template, env map[string]string) *httprouter.Router {
+func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *httprouter.Router {
 	router := httprouter.New()
 	router.PanicHandler = panicHandler
 
@@ -21,7 +22,7 @@ func initRouter(ds datastore.Datastore, t *template.Template, env map[string]str
 	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds, t))
 	router.POST("/threads", controllers.StoreThread.Handler(ds, t))
 	router.OPTIONS("/threads", corsHandler)
-	router.ServeFiles("/static/*filepath", http.Dir(env["PUBLIC_PATH"]))
+	router.ServeFiles("/static/*filepath", http.Dir(env.Read("GEXT_PUBLIC_PATH")))
 
 	return router
 }

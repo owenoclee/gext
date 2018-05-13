@@ -4,11 +4,13 @@ import (
 	"html/template"
 	"io/ioutil"
 	"strings"
+
+	"github.com/owenoclee/gext/config"
 )
 
-func initViews(env map[string]string) (*template.Template, error) {
+func initViews(env config.Env) (*template.Template, error) {
 	var templateFiles []string
-	files, err := ioutil.ReadDir(env["VIEWS_PATH"])
+	files, err := ioutil.ReadDir(env.Read("GEXT_VIEWS_PATH"))
 	if err != nil {
 		return nil, err
 	}
@@ -16,7 +18,7 @@ func initViews(env map[string]string) (*template.Template, error) {
 		if !file.IsDir() {
 			filename := file.Name()
 			if strings.HasSuffix(filename, ".html") {
-				templateFiles = append(templateFiles, env["VIEWS_PATH"]+filename)
+				templateFiles = append(templateFiles, env.Read("GEXT_VIEWS_PATH")+filename)
 			}
 		}
 	}
