@@ -52,9 +52,9 @@ func newMySQLDatastore(env map[string]string) (Datastore, error) {
 func (db mySQLDatastore) StoreThread(thread *models.Post) (uint32, error) {
 	result, err := db.Exec(
 		"INSERT INTO posts (board, subject, body) VALUES (?, ?, ?)",
-		thread.GetBoard(),
-		thread.GetSubject(),
-		thread.GetBody(),
+		thread.Board,
+		thread.Subject,
+		thread.Body,
 	)
 	if err != nil {
 		return 0, err
@@ -118,8 +118,8 @@ func (db mySQLDatastore) GetThreadBoard(id uint32) (string, error) {
 func (db mySQLDatastore) StorePost(post *models.Post) (uint32, error) {
 	result, err := db.Exec(
 		"INSERT INTO posts (reply_to, body) VALUES (?, ?)",
-		post.GetReplyTo(),
-		post.GetBody(),
+		post.ReplyTo,
+		post.Body,
 	)
 	if err != nil {
 		return 0, err
@@ -176,7 +176,7 @@ func (db mySQLDatastore) GetPage(board string, pageNum uint32) (models.Page, err
 		}
 
 		// if this post is a thread
-		if postResponse.GetReplyTo() == 0 {
+		if postResponse.ReplyTo == 0 {
 			if len(curThread.Posts) > 0 {
 				page.Threads = append(page.Threads, curThread)
 			}

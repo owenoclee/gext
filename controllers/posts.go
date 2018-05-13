@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
@@ -15,18 +14,22 @@ import (
 
 var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
 	// Read
-	postBinary, err := ioutil.ReadAll(r.Body)
-	post := &models.Post{}
-	if err2 := proto.Unmarshal(postBinary, post); err != nil || err2 != nil {
+	r.ParseForm()
+	replyTo, err := strconv.ParseUint(r.FormValue("reply_to"), 10, 32)
+	if err != nil {
 		return responses.Status(400)
+	}
+	post := &models.Post{
+		ReplyTo: uint32(replyTo),
+		Body:    r.FormValue("body"),
 	}
 
 	// Validate
-	post.Body = strings.TrimSpace(post.GetBody())
+	post.Body = strings.TrimSpace(post.Body)
 	if post.Body == "" || len([]rune(post.Body)) > 4000 {
 		return responses.Status(422)
 	}
-	board, err := ds.GetThreadBoard(post.GetReplyTo())
+	board, err := ds.GetThreadBoard(post.ReplyTo)
 	if board == "" {
 		if err != nil {
 			return responses.LogError(err)
@@ -39,5 +42,5 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.D
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/%v/thread/%v#%v", board, post.GetReplyTo(), id))
+	return responses.Created(fmt.Sprintf("/%v/thread/%v#%v", board, post.ReplyTo, id))
 }
