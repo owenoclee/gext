@@ -6,7 +6,9 @@ ENV PACKAGE=github.com/owenoclee/gext-server
 ENV ADDRESS=localhost \
     PORT=8080 \
     DATASTORE=mysql \
-    DATASTORE_MYSQL_DSN=root@/gext
+    DATASTORE_MYSQL_DSN=root@/gext \
+    VIEWS_PATH=/go/src/github.com/owenoclee/gext/views/ \
+    PUBLIC_PATH=/go/src/github.com/owenoclee/gext/public/
 
 ADD . /go/src/${PACKAGE}
 
@@ -28,4 +30,3 @@ RUN protoc --go_out=/go/src/${PACKAGE}/models \
 ENTRYPOINT /go/bin/gext-server
 
 EXPOSE 8080
-
