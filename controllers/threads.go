@@ -17,7 +17,7 @@ import (
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
 var CreateThread Action = func(_ *http.Request, _ httprouter.Params, _ datastore.Datastore, t *template.Template) responses.Response {
-	return responses.View(t.Lookup("start-thread.html"), responses.NoData)
+	return responses.View(t.Lookup("start-thread.html"), responses.ViewData{Title: "start thread - gext"})
 }
 
 var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {

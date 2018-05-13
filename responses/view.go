@@ -15,8 +15,6 @@ type ViewData struct {
 	Data  interface{}
 }
 
-var NoData = ViewData{}
-
 func (v view) Write(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	v.template.Execute(w, v.data)
