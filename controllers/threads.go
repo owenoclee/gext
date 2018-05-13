@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -15,7 +16,11 @@ import (
 
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
-var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
+var CreateThread Action = func(_ *http.Request, _ httprouter.Params, _ datastore.Datastore, t *template.Template) responses.Response {
+	return responses.View(t.Lookup("start-thread.html"), responses.NoData)
+}
+
+var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
 	post := &models.Post{
@@ -40,10 +45,10 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
+	return responses.Created(fmt.Sprintf("/threads/%v", id))
 }
 
-var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
+var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	id64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
 
@@ -60,5 +65,8 @@ var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.
 	} else if len(thread.Posts) == 0 {
 		return responses.Status(404)
 	}
-	return responses.Status(200)
+	return responses.View(t.Lookup("thread.html"), responses.ViewData{
+		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
+		Data:  &thread,
+	})
 }

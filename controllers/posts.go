@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,7 +13,7 @@ import (
 	"github.com/owenoclee/gext/responses"
 )
 
-var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
+var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
 	replyTo, err := strconv.ParseUint(r.FormValue("reply_to"), 10, 32)
@@ -42,5 +43,5 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.D
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/%v/thread/%v#%v", board, post.ReplyTo, id))
+	return responses.Created(fmt.Sprintf("/threads/%v#%v", post.ReplyTo, id))
 }
