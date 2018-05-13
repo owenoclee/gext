@@ -13,7 +13,7 @@ type mySQLDatastore struct{ *sql.DB }
 
 const (
 	maxAttempts = 5
-	retryDelay  = 3 * time.Second
+	retryDelay  = 5 * time.Second
 )
 
 func newMySQLDatastore(env config.Env) (Datastore, error) {
