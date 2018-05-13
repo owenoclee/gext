@@ -2,13 +2,12 @@ package controllers
 
 import (
 	"fmt"
-	"io/ioutil"
+	"html/template"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/golang/protobuf/proto"
 	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
@@ -17,21 +16,26 @@ import (
 
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
-var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore) responses.Response {
+var CreateThread Action = func(_ *http.Request, _ httprouter.Params, _ datastore.Datastore, t *template.Template) responses.Response {
+	return responses.View(t.Lookup("start-thread.html"), responses.ViewData{Title: "start thread - gext"})
+}
+
+var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
-	postBinary, err := ioutil.ReadAll(r.Body)
-	post := &models.Post{}
-	if err2 := proto.Unmarshal(postBinary, post); err != nil || err2 != nil {
-		return responses.Status(400)
+	r.ParseForm()
+	post := models.Post{
+		Board:   r.FormValue("board"),
+		Subject: r.FormValue("subject"),
+		Body:    r.FormValue("body"),
 	}
 
 	// Validate
-	post.Board = strings.ToLower(strings.TrimSpace(post.GetBoard()))
+	post.Board = strings.ToLower(strings.TrimSpace(post.Board))
 	if !boardRegex.MatchString(post.Board) {
 		return responses.Status(422)
 	}
-	post.Subject = strings.TrimSpace(post.GetSubject())
-	post.Body = strings.TrimSpace(post.GetBody())
+	post.Subject = strings.TrimSpace(post.Subject)
+	post.Body = strings.TrimSpace(post.Body)
 	if (post.Subject == "" && post.Body == "") || len([]rune(post.Subject)) > 32 || len([]rune(post.Body)) > 4000 {
 		return responses.Status(422)
 	}
@@ -41,12 +45,12 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
+	return responses.Created(fmt.Sprintf("/threads/%v", id))
 }
 
-var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
+var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
-	id64, err := strconv.ParseInt(p.ByName("id"), 10, 64)
+	id64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
 
 	// Validate
 	if err != nil {
@@ -58,8 +62,11 @@ var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.
 	thread, err := ds.GetThread(id)
 	if err != nil {
 		return responses.LogError(err)
-	} else if thread.GetPosts() == nil {
+	} else if len(thread.Posts) == 0 {
 		return responses.Status(404)
 	}
-	return responses.Protobuf(&thread, 200)
+	return responses.View(t.Lookup("thread.html"), responses.ViewData{
+		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
+		Data:  thread,
+	})
 }

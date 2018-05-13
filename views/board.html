@@ -1,0 +1,15 @@
+{{ template "header" . }}
+{{ with .Data }}
+<div class="board">
+    <div class="threads">
+        {{ $lastThreadId := .LastThread.Id }} {{ range $index, $element := .Threads }}
+            {{ template "thread" . }}
+            {{ if ne .Id $lastThreadId }}
+                <hr>
+            {{ end }}
+        {{ end }}
+    </div>
+    {{ template "pagenavigation" . }}
+</div>
+{{ end }}
+{{ template "footer" }}

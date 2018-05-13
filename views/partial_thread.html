@@ -1,0 +1,16 @@
+{{ define "thread" }}
+<div class="thread">
+    {{ template "post" .OriginalPost }}
+
+    {{ if .HasHiddenReplies }}
+        <p class="collapsed-text">
+            {{ len .HiddenReplies }} replies omitted.
+            <a href="/threads/{{ .Id }}">View thread</a>.
+        </p>
+    {{ end }}
+
+    {{ range .ShownReplies }}
+        {{ template "post" . }}
+    {{ end }}
+</div>
+{{ end }}

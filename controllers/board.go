@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -9,9 +11,9 @@ import (
 	"github.com/owenoclee/gext/responses"
 )
 
-var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore) responses.Response {
+var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
-	pageNum64, err := strconv.ParseInt(p.ByName("page"), 10, 64)
+	pageNum64, err := strconv.ParseUint(p.ByName("page"), 10, 32)
 
 	// Validate
 	if err != nil {
@@ -23,11 +25,18 @@ var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.D
 	}
 
 	// Show
-	page, err := ds.GetPage(p.ByName("board"), pageNum)
+	board := p.ByName("board")
+	page, err := ds.GetPage(board, pageNum)
 	if err != nil {
 		return responses.LogError(err)
-	} else if page.GetThreads() == nil {
+	} else if len(page.Threads) == 0 {
 		return responses.Status(404)
 	}
-	return responses.Protobuf(&page, 200)
+	return responses.View(
+		t.Lookup("board.html"),
+		responses.ViewData{
+			Title: fmt.Sprintf("/%v/ - gext", board),
+			Data:  page,
+		},
+	)
 }

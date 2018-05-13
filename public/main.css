@@ -1,0 +1,123 @@
+body {
+    font-size: 14px;
+    background-color: #FFF5F8;
+}
+
+a {
+    color: #DD77E9;
+    text-decoration: none;
+}
+
+body, p, pre {
+    margin: 0;
+    font-family: "Lucida Sans Typewriter", "Lucida Console", monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #FFCCEE;
+}
+
+input[type="text"], select, textarea, button {
+    font-size: 12px;
+    font-family: inherit;
+    border-color: #CCC;
+}
+
+input[type="text"], textarea {
+    display: block;
+    width: 300px;
+    margin-top: 3px;
+    padding: 3px;
+    border-style: solid;
+    border-width: 1px;
+}
+
+input[type="submit"] {
+    margin-top: 3px;
+}
+
+.container {
+    padding: 10px 16px;
+}
+
+#app {
+    margin: 0 auto;
+}
+
+@media only screen and (min-width: 600px) {
+    #app {
+        width: 568px;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    #app {
+        width: 736px;
+    }
+}
+
+@media only screen and (min-width: 1080px) {
+    #app {
+        width: 1048px;
+    }
+}
+
+.navigation {
+    color: #F7CBEE;
+}
+
+.top-navigation {
+    margin: 10px 0 20px 0;
+}
+
+.page-navigation {
+    margin: 20px 0 10px 0;
+}
+
+.router-link-active {
+    color: #583E4A;
+}
+
+.thread {
+    margin: 10px 0;
+}
+
+.post-container:first-child {
+    margin-left: 0px;
+}
+
+.post-container {
+    margin-left: 24px;
+    margin-bottom: 3px;
+}
+
+.post {
+    display: inline-block;
+    padding: 12px;
+    background-color: #FFEDF2;
+    border: 1px solid #FFCCEE;
+    color: #6B2220;
+}
+
+.post-head {
+    margin-bottom: 6px;
+}
+
+.post-subject {
+    font-weight: bold;
+    color: #FF5796;
+}
+
+.errors {
+    color: #DE2424;
+    list-style: none;
+    padding-left: 0;
+}
+
+.collapsed-text {
+    font-size: 11px;
+    color: #75696E;
+    margin-bottom: 2px;
+}
