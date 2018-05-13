@@ -36,5 +36,5 @@ func main() {
 	defer ds.Close()
 
 	router := initRouter(ds, templates, env)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env.Read("ADDRESS"), env.Read("PORT")), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env.Read("GEXT_ADDRESS"), env.Read("GEXT_PORT")), router))
 }

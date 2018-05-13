@@ -4,8 +4,8 @@ services:
   gext-server:
     build: ./
     environment:
-      ADDRESS: "0.0.0.0"
-      DATASTORE_MYSQL_DSN: "root:password1@tcp(db:3306)/gext"
+      GEXT_ADDRESS: "0.0.0.0"
+      GEXT_DATASTORE_MYSQL_DSN: "root:password1@tcp(db:3306)/gext"
     depends_on:
       - db
     networks:

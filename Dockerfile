@@ -3,12 +3,12 @@ FROM golang
 ENV PACKAGE=github.com/owenoclee/gext-server
 
 # gext-server run time configuration
-ENV ADDRESS=localhost \
-    PORT=8080 \
-    DATASTORE=mysql \
-    DATASTORE_MYSQL_DSN=root@/gext \
-    VIEWS_PATH=/go/src/github.com/owenoclee/gext/views/ \
-    PUBLIC_PATH=/go/src/github.com/owenoclee/gext/public/
+ENV GEXT_ADDRESS=localhost \
+    GEXT_PORT=8080 \
+    GEXT_DATASTORE=mysql \
+    GEXT_DATASTORE_MYSQL_DSN=root@/gext \
+    GEXT_VIEWS_PATH=/go/src/github.com/owenoclee/gext/views/ \
+    GEXT_PUBLIC_PATH=/go/src/github.com/owenoclee/gext/public/
 
 ADD . /go/src/${PACKAGE}
 
