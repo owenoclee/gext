@@ -1,0 +1,8 @@
+{{ template "header" . }}
+<form method="POST" action="/threads">
+    <input name="board" type="text" placeholder="Board" maxlength="16" required>
+    <input name="subject" type="text" placeholder="Subject" maxlength="32">
+    <textarea name="body" placeholder="Message" rows="4" maxlength="4000"></textarea>
+    <input type="submit" value="Submit">
+</form>
+{{ template "footer" }}

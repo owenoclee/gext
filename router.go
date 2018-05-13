@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
 
@@ -9,16 +10,18 @@ import (
 	"github.com/owenoclee/gext/datastore"
 )
 
-func initRouter(ds datastore.Datastore) *httprouter.Router {
+func initRouter(ds datastore.Datastore, t *template.Template, env map[string]string) *httprouter.Router {
 	router := httprouter.New()
 	router.PanicHandler = panicHandler
 
-	router.POST("/posts", controllers.StorePost.Handler(ds))
+	router.POST("/posts", controllers.StorePost.Handler(ds, t))
 	router.OPTIONS("/posts", corsHandler)
-	router.GET("/threads/:id", controllers.ShowThread.Handler(ds))
-	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds))
-	router.POST("/threads", controllers.StoreThread.Handler(ds))
+	router.GET("/start-thread", controllers.CreateThread.Handler(ds, t))
+	router.GET("/threads/:id", controllers.ShowThread.Handler(ds, t))
+	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds, t))
+	router.POST("/threads", controllers.StoreThread.Handler(ds, t))
 	router.OPTIONS("/threads", corsHandler)
+	router.ServeFiles("/static/*filepath", http.Dir(env["PUBLIC_PATH"]))
 
 	return router
 }

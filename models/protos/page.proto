@@ -1,9 +1,0 @@
-syntax = "proto3";
-package gext.models;
-option go_package = "models";
-
-import "thread.proto";
-
-message Page {
-    repeated gext.models.Thread threads = 1;
-}

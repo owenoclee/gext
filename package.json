@@ -1,9 +1,0 @@
-{
-    "name": "gext-server",
-    "version": "0.0.1",
-    "description": "gext textboard server",
-    "author": "Owen Oclee (https://github.com/owenoclee)",
-    "scripts": {
-        "protos": "protoc --go_out=models --proto_path=models/protos models/protos/*.proto"
-    }
-}

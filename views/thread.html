@@ -1,0 +1,17 @@
+{{ template "header" . }}
+{{ with .Data }}
+<div class="thread">
+    {{ template "post" .OriginalPost }}
+
+    {{ range .Replies }}
+        {{ template "post" . }}
+    {{ end }}
+
+    <form method="POST" action="/posts">
+        <input name="reply_to" value="{{ .Id }}" type="hidden">
+        <textarea name="body" placeholder="Message" rows="4" maxlength="4000"></textarea>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+{{ end }}
+{{ template "footer" }}

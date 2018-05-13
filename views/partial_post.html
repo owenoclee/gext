@@ -1,0 +1,19 @@
+{{ define "post" }}
+<div class="post-container">
+    <div class="post">
+        <p class="post-head">
+            {{ if ne .Subject "" }}
+                <span class="post-subject">{{ .Subject }}</span>
+            {{ end }}
+            <span class="post-date" v-text="date" />
+            {{ if eq .ReplyTo 0 }}
+                <a href="/threads/{{ .Id }}">No.</a>
+            {{ else }}
+                <a href="/threads/{{ .ReplyTo }}#{{ .Id }}">No.</a>
+            {{ end }}
+            <span class="post-id">{{ .Id }}</span>
+        </p>
+        {{ if ne .Body "" }}<pre class="post-body">{{ .Body }}</pre>{{ end }}
+    </div>
+</div>
+{{ end }}

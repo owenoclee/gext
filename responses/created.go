@@ -8,7 +8,7 @@ func (l location) Write(w http.ResponseWriter) {
 	w.Header().Set("Location", string(l))
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Expose-Headers", "Location")
-	w.WriteHeader(201)
+	w.WriteHeader(302)
 }
 
 func Created(l string) Response {
