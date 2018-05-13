@@ -20,7 +20,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.D
 	if err != nil {
 		return responses.Status(400)
 	}
-	post := &models.Post{
+	post := models.Post{
 		ReplyTo: uint32(replyTo),
 		Body:    r.FormValue("body"),
 	}

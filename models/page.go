@@ -1,25 +1,25 @@
 package models
 
 type Page struct {
-	Threads []*Thread
+	Threads []Thread
 }
 
 func (p Page) IsEmpty() bool {
 	return len(p.Threads) == 0
 }
 
-func (p Page) FirstThread() *Thread {
+func (p Page) FirstThread() Thread {
 	if !p.IsEmpty() {
 		return p.Threads[0]
 	}
-	return &Thread{}
+	return Thread{}
 }
 
-func (p Page) LastThread() *Thread {
+func (p Page) LastThread() Thread {
 	if !p.IsEmpty() {
 		return p.Threads[len(p.Threads)-1]
 	}
-	return &Thread{}
+	return Thread{}
 }
 
 func (p Page) Board() string {

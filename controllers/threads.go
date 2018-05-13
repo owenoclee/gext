@@ -23,7 +23,7 @@ var CreateThread Action = func(_ *http.Request, _ httprouter.Params, _ datastore
 var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
-	post := &models.Post{
+	post := models.Post{
 		Board:   r.FormValue("board"),
 		Subject: r.FormValue("subject"),
 		Body:    r.FormValue("body"),
@@ -67,6 +67,6 @@ var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.
 	}
 	return responses.View(t.Lookup("thread.html"), responses.ViewData{
 		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
-		Data:  &thread,
+		Data:  thread,
 	})
 }
