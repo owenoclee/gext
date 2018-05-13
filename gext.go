@@ -23,10 +23,11 @@ func main() {
 	}
 
 	ds, err := datastore.NewDatastore(env)
-	defer ds.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer ds.Close()
+
 	router := initRouter(ds, templates, env)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env["ADDRESS"], env["PORT"]), router))
 }
