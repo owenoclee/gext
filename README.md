@@ -10,7 +10,7 @@ docker compose up
 
 After a few moments you should see gext at `localhost` on port 80.
 
-## Manual Installation
+## Manual Installation (not recommended)
 ### Prerequisites
 * golang 1.7+
 * MySQL 5.7 (other versions may work but have not been tested)
