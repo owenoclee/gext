@@ -11,16 +11,12 @@ import (
 type multiError []error
 
 func newMultiError(es []error) error {
-	var nonNilErrors []error
 	for _, e := range es {
 		if e != nil {
-			nonNilErrors = append(nonNilErrors, e)
+			return multiError(es)
 		}
 	}
-	if len(nonNilErrors) == 0 {
-		return nil
-	}
-	return multiError(nonNilErrors)
+	return nil
 }
 
 func (e multiError) Error() string {
