@@ -10,7 +10,7 @@ import (
 
 func initViews(env config.Env) (*template.Template, error) {
 	var templateFiles []string
-	files, err := ioutil.ReadDir(env.Read("GEXT_VIEWS_PATH"))
+	files, err := ioutil.ReadDir(env.ViewsPath())
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +18,7 @@ func initViews(env config.Env) (*template.Template, error) {
 		if !file.IsDir() {
 			filename := file.Name()
 			if strings.HasSuffix(filename, ".html") {
-				templateFiles = append(templateFiles, env.Read("GEXT_VIEWS_PATH")+filename)
+				templateFiles = append(templateFiles, env.ViewsPath()+filename)
 			}
 		}
 	}

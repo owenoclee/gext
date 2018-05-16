@@ -4,25 +4,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
-	"github.com/joho/godotenv"
-	"github.com/owenoclee/gext/config"
 	"github.com/owenoclee/gext/datastore"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	var environment string
-	for _, e := range os.Environ() {
-		environment = environment + "\n" + e
-	}
-	envMap, err := godotenv.Unmarshal(environment)
+	env, err := initEnv()
 	if err != nil {
 		log.Fatal(err)
 	}
-	env := config.NewEnv(envMap)
 
 	templates, err := initViews(env)
 	if err != nil {
@@ -36,5 +28,5 @@ func main() {
 	defer ds.Close()
 
 	router := initRouter(ds, templates, env)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env.Read("GEXT_ADDRESS"), env.Read("GEXT_PORT")), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("%v:%v", env.Address(), env.Port()), router))
 }

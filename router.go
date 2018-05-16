@@ -22,7 +22,7 @@ func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *h
 	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds, t))
 	router.POST("/threads", controllers.StoreThread.Handler(ds, t))
 	router.OPTIONS("/threads", corsHandler)
-	router.ServeFiles("/static/*filepath", http.Dir(env.Read("GEXT_PUBLIC_PATH")))
+	router.ServeFiles("/static/*filepath", http.Dir(env.PublicPath()))
 
 	return router
 }

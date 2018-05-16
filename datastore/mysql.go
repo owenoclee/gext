@@ -17,7 +17,7 @@ const (
 )
 
 func newMySQLDatastore(env config.Env) (Datastore, error) {
-	db, err := sql.Open("mysql", env.Read("GEXT_DATASTORE_MYSQL_DSN")+"?parseTime=true")
+	db, err := sql.Open("mysql", env.DatastoreMySqlDsn()+"?parseTime=true")
 	if err != nil {
 		return nil, err
 	}
