@@ -19,7 +19,7 @@ After a few moments you should see gext at `localhost` on port 80.
 You need to export the following environment variables (and adjust them as necessary) before running gext manually:
 
 ```bash
-export GEXT_ADDRESS=localhost
+export GEXT_ADDRESS=127.0.0.1
 export GEXT_PORT=8080
 
 export GEXT_DATASTORE=mysql
