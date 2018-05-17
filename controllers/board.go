@@ -8,6 +8,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
 )
 
@@ -29,14 +30,18 @@ var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.D
 	page, err := ds.GetPage(board, pageNum)
 	if err != nil {
 		return responses.LogError(err)
-	} else if len(page.Threads) == 0 {
-		return responses.Status(404)
 	}
 	return responses.View(
 		t.Lookup("board.html"),
 		responses.ViewData{
 			Title: fmt.Sprintf("/%v/ - gext", board),
-			Data:  page,
+			Data: struct {
+				Page  models.Page
+				Board string
+			}{
+				page,
+				board,
+			},
 		},
 	)
 }

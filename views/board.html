@@ -2,14 +2,15 @@
 {{ with .Data }}
 <div class="board">
     <div class="threads">
-        {{ $lastThreadId := .LastThread.Id }} {{ range $index, $element := .Threads }}
+        {{ $lastThreadId := .Page.LastThread.Id }}
+        {{ range $index, $element := .Page.Threads }}
             {{ template "thread" . }}
             {{ if ne .Id $lastThreadId }}
                 <hr>
             {{ end }}
         {{ end }}
     </div>
-    {{ template "pagenavigation" . }}
+    {{ template "pagenavigation" .Board }}
 </div>
 {{ end }}
 {{ template "footer" }}
