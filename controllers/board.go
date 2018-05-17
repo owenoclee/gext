@@ -6,15 +6,23 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/julienschmidt/httprouter"
+	"goji.io/pattern"
+
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
+	"goji.io/pat"
 )
 
-var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
+var ShowBoard Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
-	pageNum64, err := strconv.ParseUint(p.ByName("page"), 10, 32)
+	var pageNum64 uint64
+	var err error
+	if _, ok := r.Context().Value(pattern.Variable("page")).(string); ok {
+		pageNum64, err = strconv.ParseUint(pat.Param(r, "page"), 10, 32)
+	} else {
+		pageNum64 = 1
+	}
 
 	// Validate
 	if err != nil {
@@ -26,7 +34,7 @@ var ShowBoard Action = func(_ *http.Request, p httprouter.Params, ds datastore.D
 	}
 
 	// Show
-	board := p.ByName("board")
+	board := pat.Param(r, "board")
 	page, err := ds.GetPage(board, pageNum)
 	if err != nil {
 		return responses.LogError(err)

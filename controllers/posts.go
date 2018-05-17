@@ -7,13 +7,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
 )
 
-var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
+var StorePost Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
 	replyTo, err := strconv.ParseUint(r.FormValue("reply_to"), 10, 32)
