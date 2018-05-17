@@ -17,11 +17,11 @@ func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *g
 	mux := goji.NewMux()
 
 	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static", http.FileServer(http.Dir(env.PublicPath()))))
-	mux.Handle(pat.Post("/posts"), controllers.StorePost.Handler(ds, t))
-	mux.Handle(pat.Get("/start-thread"), controllers.CreateThread.Handler(ds, t))
-	mux.Handle(pat.Get("/threads/:id"), controllers.ShowThread.Handler(ds, t))
-	mux.Handle(pat.Get("/boards/:board"), controllers.ShowBoard.Handler(ds, t))
-	mux.Handle(pat.Get("/boards/:board/page/:page"), controllers.ShowBoard.Handler(ds, t))
+	mux.Handle(pat.Get("/create-thread"), controllers.CreateThread.Handler(ds, t))
+	mux.Handle(pat.Get("/:board"), controllers.ShowBoard.Handler(ds, t))
+	mux.Handle(pat.Get("/:board/:page"), controllers.ShowBoard.Handler(ds, t))
+	mux.Handle(pat.Get("/:board/thread/:id"), controllers.ShowThread.Handler(ds, t))
+	mux.Handle(pat.Post("/:board/thread/:id/post"), controllers.StorePost.Handler(ds, t))
 	mux.Handle(pat.Post("/threads"), controllers.StoreThread.Handler(ds, t))
 
 	return mux

@@ -17,7 +17,7 @@ import (
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
 var CreateThread Action = func(_ *http.Request, _ datastore.Datastore, t *template.Template) responses.Response {
-	return responses.View(t.Lookup("start-thread.html"), responses.ViewData{Title: "start thread - gext"})
+	return responses.View(t.Lookup("create-thread.html"), responses.ViewData{Title: "create thread - gext"})
 }
 
 var StoreThread Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
@@ -45,7 +45,7 @@ var StoreThread Action = func(r *http.Request, ds datastore.Datastore, t *templa
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/threads/%v", id))
+	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
 }
 
 var ShowThread Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
@@ -67,6 +67,6 @@ var ShowThread Action = func(r *http.Request, ds datastore.Datastore, t *templat
 	}
 	return responses.View(t.Lookup("thread.html"), responses.ViewData{
 		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
-		Data:  thread,
+		Data:  thread.Normalised(),
 	})
 }
