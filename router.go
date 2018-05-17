@@ -16,6 +16,7 @@ import (
 func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *goji.Mux {
 	mux := goji.NewMux()
 
+	mux.Handle(pat.Get("/"), http.RedirectHandler("/general", 302))
 	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static", http.FileServer(http.Dir(env.PublicPath()))))
 	mux.Handle(pat.Get("/create-thread"), controllers.CreateThread.Handler(ds, t))
 	mux.Handle(pat.Get("/:board"), controllers.ShowBoard.Handler(ds, t))
