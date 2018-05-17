@@ -23,9 +23,9 @@ var registeredFactories map[string]datastoreFactory = map[string]datastoreFactor
 }
 
 func NewDatastore(env config.Env) (Datastore, error) {
-	factory := registeredFactories[env.Read("GEXT_DATASTORE")]
+	factory := registeredFactories[env.Datastore()]
 	if factory == nil {
-		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", env.Read("GEXT_DATASTORE"))
+		return nil, fmt.Errorf("Invalid DATASTORE: '%v'", env.Datastore())
 	}
 	return factory(env)
 }
