@@ -5,9 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/owenoclee/gext/datastore"
-
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/owenoclee/gext/datastore"
 )
 
 func main() {

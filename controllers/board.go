@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"goji.io/pattern"
-
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
 	"goji.io/pat"
+	"goji.io/pattern"
 )
 
 var ShowBoard Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {

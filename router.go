@@ -6,13 +6,12 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"goji.io"
-	"goji.io/pat"
-
 	"github.com/owenoclee/gext/config"
 	"github.com/owenoclee/gext/controllers"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/responses"
+	"goji.io"
+	"goji.io/pat"
 )
 
 func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *goji.Mux {
