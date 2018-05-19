@@ -7,8 +7,7 @@
         {{ template "post" . }}
     {{ end }}
 
-    <form method="POST" action="/posts">
-        <input name="reply_to" value="{{ .Id }}" type="hidden">
+    <form method="POST" action="/{{ .Board }}/thread/{{ .Id }}/post">
         <textarea name="body" placeholder="Message" rows="4" maxlength="4000"></textarea>
         <input type="submit" value="Submit">
     </form>

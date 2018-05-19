@@ -7,16 +7,16 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
+	"goji.io/pat"
 )
 
-var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
+var StorePost Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
-	replyTo, err := strconv.ParseUint(r.FormValue("reply_to"), 10, 32)
+	replyTo, err := strconv.ParseUint(pat.Param(r, "id"), 10, 32)
 	if err != nil {
 		return responses.Status(400)
 	}
@@ -31,7 +31,7 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.D
 		return responses.Status(422)
 	}
 	board, err := ds.GetThreadBoard(post.ReplyTo)
-	if board == "" {
+	if board == "" || board != pat.Param(r, "board") {
 		if err != nil {
 			return responses.LogError(err)
 		}
@@ -43,5 +43,5 @@ var StorePost Action = func(r *http.Request, _ httprouter.Params, ds datastore.D
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/threads/%v#%v", post.ReplyTo, id))
+	return responses.Created(fmt.Sprintf("/%v/thread/%v#%v", board, post.ReplyTo, id))
 }

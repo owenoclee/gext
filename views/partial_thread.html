@@ -5,7 +5,7 @@
     {{ if .HasHiddenReplies }}
         <p class="collapsed-text">
             {{ len .HiddenReplies }} replies omitted.
-            <a href="/threads/{{ .Id }}">View thread</a>.
+            <a href="/{{ .Board }}/thread/{{ .Id }}">View thread</a>.
         </p>
     {{ end }}
 

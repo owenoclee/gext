@@ -4,36 +4,41 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"runtime/debug"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/config"
 	"github.com/owenoclee/gext/controllers"
 	"github.com/owenoclee/gext/datastore"
+	"github.com/owenoclee/gext/responses"
+	"goji.io"
+	"goji.io/pat"
 )
 
-func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *httprouter.Router {
-	router := httprouter.New()
-	router.PanicHandler = panicHandler
+func initRouter(ds datastore.Datastore, t *template.Template, env config.Env) *goji.Mux {
+	mux := goji.NewMux()
 
-	router.POST("/posts", controllers.StorePost.Handler(ds, t))
-	router.OPTIONS("/posts", corsHandler)
-	router.GET("/start-thread", controllers.CreateThread.Handler(ds, t))
-	router.GET("/threads/:id", controllers.ShowThread.Handler(ds, t))
-	router.GET("/boards/:board/page/:page", controllers.ShowBoard.Handler(ds, t))
-	router.POST("/threads", controllers.StoreThread.Handler(ds, t))
-	router.OPTIONS("/threads", corsHandler)
-	router.ServeFiles("/static/*filepath", http.Dir(env.PublicPath()))
+	mux.Use(panicHandler)
+	mux.Handle(pat.Get("/"), http.RedirectHandler("/general", 302))
+	mux.Handle(pat.Get("/static/*"), http.StripPrefix("/static", http.FileServer(http.Dir(env.PublicPath()))))
+	mux.Handle(pat.Get("/create-thread"), controllers.CreateThread.Handler(ds, t))
+	mux.Handle(pat.Get("/:board"), controllers.ShowBoard.Handler(ds, t))
+	mux.Handle(pat.Get("/:board/:page"), controllers.ShowBoard.Handler(ds, t))
+	mux.Handle(pat.Get("/:board/thread/:id"), controllers.ShowThread.Handler(ds, t))
+	mux.Handle(pat.Post("/:board/thread/:id/post"), controllers.StorePost.Handler(ds, t))
+	mux.Handle(pat.Post("/threads"), controllers.StoreThread.Handler(ds, t))
 
-	return router
+	return mux
 }
 
-func corsHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-}
+func panicHandler(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("error: %v\n\nrequest: %v\n\nstack trace: %v\n", err, r, string(debug.Stack()))
+				responses.Status(500).Write(w)
+			}
+		}()
 
-func panicHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
-	log.Printf("panic handling http %v request to '%v':\n%v\n", r.Method, r.RequestURI, err)
-	w.WriteHeader(500)
+		h.ServeHTTP(w, r)
+	})
 }

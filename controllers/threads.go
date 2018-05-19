@@ -8,19 +8,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/julienschmidt/httprouter"
 	"github.com/owenoclee/gext/datastore"
 	"github.com/owenoclee/gext/models"
 	"github.com/owenoclee/gext/responses"
+	"goji.io/pat"
 )
 
 var boardRegex = regexp.MustCompile("^[a-z]{1,16}$")
 
-var CreateThread Action = func(_ *http.Request, _ httprouter.Params, _ datastore.Datastore, t *template.Template) responses.Response {
-	return responses.View(t.Lookup("start-thread.html"), responses.ViewData{Title: "start thread - gext"})
+var CreateThread Action = func(_ *http.Request, _ datastore.Datastore, t *template.Template) responses.Response {
+	return responses.View(t.Lookup("create-thread.html"), responses.ViewData{Title: "create thread - gext"})
 }
 
-var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
+var StoreThread Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
 	r.ParseForm()
 	post := models.Post{
@@ -45,12 +45,12 @@ var StoreThread Action = func(r *http.Request, _ httprouter.Params, ds datastore
 	if err != nil {
 		return responses.LogError(err)
 	}
-	return responses.Created(fmt.Sprintf("/threads/%v", id))
+	return responses.Created(fmt.Sprintf("/%v/thread/%v", post.Board, id))
 }
 
-var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.Datastore, t *template.Template) responses.Response {
+var ShowThread Action = func(r *http.Request, ds datastore.Datastore, t *template.Template) responses.Response {
 	// Read
-	id64, err := strconv.ParseUint(p.ByName("id"), 10, 32)
+	id64, err := strconv.ParseUint(pat.Param(r, "id"), 10, 32)
 
 	// Validate
 	if err != nil {
@@ -67,6 +67,6 @@ var ShowThread Action = func(_ *http.Request, p httprouter.Params, ds datastore.
 	}
 	return responses.View(t.Lookup("thread.html"), responses.ViewData{
 		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
-		Data:  thread,
+		Data:  thread.Normalised(),
 	})
 }
