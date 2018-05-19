@@ -88,12 +88,12 @@ func (db mySQLDatastore) GetThread(id uint32) (models.Thread, error) {
 		id,
 		id,
 	)
-	defer posts.Close()
 	if err == sql.ErrNoRows {
 		return models.Thread{}, nil
 	} else if err != nil {
 		return models.Thread{}, err
 	}
+	defer posts.Close()
 
 	// Decode database response into a thread (collection of posts)
 	thread := models.Thread{}
@@ -162,12 +162,12 @@ func (db mySQLDatastore) GetPage(board string, pageNum uint32) (models.Page, err
 		(pageNum-1)*15,
 		15,
 	)
-	defer posts.Close()
 	if err == sql.ErrNoRows {
 		return models.Page{}, nil
 	} else if err != nil {
 		return models.Page{}, err
 	}
+	defer posts.Close()
 
 	// Decode database response into a thread (collection of posts)
 	page := models.Page{}
