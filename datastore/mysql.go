@@ -37,6 +37,8 @@ func newMySQLDatastore(env config.Env) (Datastore, error) {
 		}
 	}
 
+	db.SetConnMaxLifetime(20 * time.Second)
+
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS posts (
 			id			INT	UNSIGNED	NOT NULL	AUTO_INCREMENT,
