@@ -12,7 +12,7 @@
                 <a href="/{{ .Board }}/thread/{{ .ReplyTo }}#{{ .Id }}">No.</a>
             {{- end }}<span class="post-id">{{ .Id }}</span>
         </p>
-        {{ if ne .Body "" }}<pre class="post-body">{{ .Body }}</pre>{{ end }}
+        {{ if ne .Body "" }}<pre class="post-body">{{ .BodySafeHTML }}</pre>{{ end }}
     </div>
 </div>
 {{ end }}
