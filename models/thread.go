@@ -58,11 +58,3 @@ func (t Thread) Board() string {
 	}
 	return ""
 }
-
-func (t Thread) Normalised() Thread {
-	board := t.Board()
-	for i := 0; i < len(t.Posts); i++ {
-		t.Posts[i].Board = board
-	}
-	return t
-}

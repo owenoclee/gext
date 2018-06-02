@@ -67,6 +67,6 @@ var ShowThread Action = func(r *http.Request, ds datastore.Datastore, t *templat
 	}
 	return responses.View(t.Lookup("thread.html"), responses.ViewData{
 		Title: fmt.Sprintf("/%v/ thread - gext", thread.Board()),
-		Data:  thread.Normalised(),
+		Data:  thread,
 	})
 }

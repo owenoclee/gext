@@ -122,7 +122,7 @@ func (db mySQLDatastore) GetThread(id uint32) (models.Thread, error) {
 		thread.Posts = append(thread.Posts, post)
 	}
 
-	return thread, nil
+	return normalize(thread), nil
 }
 
 func (db mySQLDatastore) GetThreadBoard(id uint32) (string, error) {
@@ -198,15 +198,23 @@ func (db mySQLDatastore) GetPage(board string, pageNum uint32) (models.Page, err
 		// if this post is a thread
 		if postResponse.ReplyTo == 0 {
 			if len(curThread.Posts) > 0 {
-				page.Threads = append(page.Threads, curThread)
+				page.Threads = append(page.Threads, normalize(curThread))
 			}
 			curThread = models.Thread{}
 		}
 		curThread.Posts = append(curThread.Posts, postResponse)
 	}
 	if len(curThread.Posts) > 0 {
-		page.Threads = append(page.Threads, curThread)
+		page.Threads = append(page.Threads, normalize(curThread))
 	}
 
 	return page, nil
+}
+
+func normalize(t models.Thread) models.Thread {
+	board := t.Board()
+	for i := 0; i < len(t.Posts); i++ {
+		t.Posts[i].Board = board
+	}
+	return t
 }
