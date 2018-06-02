@@ -1,6 +1,6 @@
 {{ define "post" }}
 <div class="post-container">
-    <div class="post">
+    <div id="{{ .Id }}" class="post">
         <p class="post-head">
             {{ if ne .Subject "" }}
                 <span class="post-subject">{{ .Subject }}</span>
