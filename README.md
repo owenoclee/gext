@@ -26,8 +26,8 @@ export GEXT_DATASTORE=mysql
 export GEXT_DATASTORE_MYSQL_DSN=root@/gext # see link below
 
 # path to html templates (views) and public folder (i.e. for CSS)
-export GEXT_VIEWS_PATH=/go/src/github.com/owenoclee/gext/views/
-export GEXT_PUBLIC_PATH=/go/src/github.com/owenoclee/gext/public/
+export GEXT_VIEWS_PATH=$GOPATH/src/github.com/owenoclee/gext/views/
+export GEXT_PUBLIC_PATH=$GOPATH/src/github.com/owenoclee/gext/public/
 ```
 
 The format for the MySQL data source name (DSN) is described in detail [here](https://github.com/go-sql-driver/mysql#dsn-data-source-name).
