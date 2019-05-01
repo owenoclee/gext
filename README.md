@@ -2,10 +2,10 @@
 An anonymous textboard forum written in golang. Uses MySQL.
 
 ## Use Docker (recommended)
-```
+```bash
 git clone https://github.com/owenoclee/gext.git
 cd gext
-docker compose up
+docker-compose up # or: docker stack deploy -c docker-compose.yml gext
 ```
 
 After a few moments you should see gext at `localhost` on port 80.
